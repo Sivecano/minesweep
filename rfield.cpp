@@ -1,5 +1,6 @@
 #include "rfield.h"
 #include "port.h"
+#include "input.h"
 #include <SDL2/SDL_net.h>
 
 rfield::rfield(const char* hostname) : field(0, 0)
@@ -36,7 +37,7 @@ rfield::rfield(const char* hostname) : field(0, 0)
 
     grid = new bool[width*height];
     status = new int8_t[width*height];
-
+    
     sync();
 } 
 
@@ -47,6 +48,14 @@ rfield::~rfield()
 
 void rfield::sync()
 {
+    input message = {SYNC, 0, 0};
+    
+    if (SDLNet_TCP_Send(sock, &message, sizeof(input)) < sizeof(input))
+    {
+        std::cerr << "couldn't request sync" << std::endl;
+        return;
+    }
+
     if (SDLNet_TCP_Recv(sock, grid, sizeof(bool) * width * height) < sizeof(bool) * width * height)
     {
         std::cerr << "couldn't get grid :(" << std::endl;
@@ -63,7 +72,23 @@ void rfield::sync()
 }
 
 void rfield::flag(uint16_t x, uint16_t y)
+{ 
+    sync();
+    input in = {FLAG, x, y};
+    if (SDLNet_TCP_Send(sock, &in, sizeof(in)) < sizeof(in))
+        std::cerr << "couldn't send flag" << std::endl;
+}
+
+bool rfield::guess(uint16_t x, uint16_t y)
 {
+    sync();
+    input in = {GUESS, x, y};
+    if (SDLNet_TCP_Send(sock, &in, sizeof(in)) < sizeof(in))
+        std::cerr << "couldn't send guess" << std::endl;
     
+    bool out = false;
+    if (SDLNet_TCP_Recv(sock, &out, sizeof(bool)) < sizeof(bool))
+        std::cerr << "couldn't recieve answer" << std::endl;
+    return out;
 }
 
