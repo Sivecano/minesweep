@@ -1,6 +1,10 @@
+#include <SDL2/SDL_render.h>
+#include <SDL2/SDL_video.h>
 #include <algorithm>
 #include <iostream>
 #include <cstdint>
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_image.h"
 
 struct field
 {
@@ -104,7 +108,7 @@ struct field
         for (uint16_t n = 0; n < 2 * width - 1; n++) out << (n % 2 ? "╧" : "═");
         out << "╝" << std::endl;
     }
-    
+
     void fill(uint16_t mines)
     {
         for (uint16_t n = 0; n < width * height; n++)
@@ -118,10 +122,11 @@ struct field
         }
 
     }
+
 };
 
 
-int main()
+void tui()
 {
     field a(10,10);
     a.fill(8);
@@ -140,7 +145,23 @@ int main()
     std::fill_n(a.status, a.width*a.height, 1);
 
     a.render(std::cout);
+}
 
+void gui()
+{
+    SDL_Init(SDL_INIT_EVERYTHING);
+    IMG_Init(IMG_INIT_PNG);
+    SDL_Window* win;
+    SDL_Renderer* ren;
+    SDL_Texture* tex;
+
+    SDL_CreateWindowAndRenderer(800, 800, 0, &win, &ren);
+    
+    tex= IMG_LoadTexture(ren, "tiles.png");
+}
+
+int main()
+{
     return 0;
 }
 
