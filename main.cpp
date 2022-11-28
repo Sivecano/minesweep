@@ -1,3 +1,4 @@
+#include <SDL2/SDL_events.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_video.h>
 #include <algorithm>
@@ -156,8 +157,28 @@ void gui()
     SDL_Texture* tex;
 
     SDL_CreateWindowAndRenderer(800, 800, 0, &win, &ren);
+    tex = IMG_LoadTexture(ren, "tiles.png");
     
-    tex= IMG_LoadTexture(ren, "tiles.png");
+    bool running = true;
+
+    while (running)
+    {
+        SDL_Event e;
+        while (SDL_PollEvent(&e))
+        {
+            switch(e.type)
+            {
+                case SDL_QUIT:
+                    running = false;
+                    break;
+            }
+        }
+
+    }
+
+
+    SDL_DestroyTexture(tex);
+    SDL_Quit();
 }
 
 int main()
