@@ -2,12 +2,8 @@
 #include <iostream>
 #include <cstdint>
 #include "field.h"
-
-#define GUI
-#ifdef GUI
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_image.h"
-#endif
 
 
 
@@ -34,7 +30,6 @@ void tui()
 }
 
 
-#ifdef GUI
 void gui(uint16_t wcells = 15, uint16_t hcells = 15, uint16_t mines = 40)
 {
     SDL_Init(SDL_INIT_EVERYTHING);
@@ -64,7 +59,7 @@ void gui(uint16_t wcells = 15, uint16_t hcells = 15, uint16_t mines = 40)
             switch(e.type)
             {
                 case SDL_MOUSEBUTTONUP:
-                    x = e.button.x;
+                    x = e.button.x;-
                     y = e.button.y;
                     state = e.button.button;
                     // std::cout << "Click " << int(state) << " at " << x << ", " << y << "\n";
@@ -138,15 +133,10 @@ void gui(uint16_t wcells = 15, uint16_t hcells = 15, uint16_t mines = 40)
     SDL_DestroyTexture(tex);
     SDL_Quit();
 }
-#endif
 
 int main()
 {
-#ifdef GUI
     gui(10, 10, 40);
-#else 
-    tui()
-#endif
     return 0;
 }
 
