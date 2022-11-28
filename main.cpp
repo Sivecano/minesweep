@@ -1,13 +1,12 @@
-#include <SDL2/SDL_events.h>
-#include <SDL2/SDL_mouse.h>
-#include <SDL2/SDL_rect.h>
-#include <SDL2/SDL_render.h>
-#include <SDL2/SDL_video.h>
 #include <algorithm>
 #include <iostream>
 #include <cstdint>
+
+#define GUI
+#ifdef GUI
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_image.h"
+#endif
 
 struct field
 {
@@ -164,6 +163,8 @@ void tui()
     a.render(std::cout);
 }
 
+
+#ifdef GUI
 void gui(uint16_t wcells = 15, uint16_t hcells = 15, uint16_t mines = 40)
 {
     SDL_Init(SDL_INIT_EVERYTHING);
@@ -267,10 +268,15 @@ void gui(uint16_t wcells = 15, uint16_t hcells = 15, uint16_t mines = 40)
     SDL_DestroyTexture(tex);
     SDL_Quit();
 }
+#endif
 
 int main()
 {
+#ifdef GUI
     gui(10, 10, 40);
+#else 
+    tui()
+#endif
     return 0;
 }
 
