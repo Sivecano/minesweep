@@ -48,7 +48,7 @@ struct field
 
     bool guess(uint16_t x, uint16_t y)
     {
-        if (x >= width || y >= height) return true;
+        if (x >= width || y >= height) return false;
 
         uncover(x + 1, y + 1);
 
@@ -59,9 +59,10 @@ struct field
     {
         uint16_t out = 0;
         
-        for (uint16_t dx = x - (x > 0); dx <= x + (x < width); dx++)
-            for (uint16_t dy = y - (y > 0); dy <= y + (y < height); dy++)
-                out += grid[dx + width * dy] ? 1 : 0;
+        for (uint16_t dx = x - ((x > 0) ? 1 : 0); dx <= x + ((x < width - 1) ? 1 : 0); dx++)
+            for (uint16_t dy = y - ((y > 0) ? 1 : 0); dy <= y + ((y < height - 1) ? 1 : 0); dy++)
+                if (grid[dx + width * dy]) out++;
+
         return out;
     }
 
@@ -114,6 +115,7 @@ struct field
 
     void fill(uint16_t mines)
     {
+        srand(time(0));
         for (uint16_t n = 0; n < width * height; n++)
         {
             if (rand() % ((width*height - n)/mines) == 0) 
@@ -126,6 +128,17 @@ struct field
 
     }
 
+    void fair_start()
+    {
+        for (uint16_t m = 0; m < 9; m++)
+            for (uint16_t n = 0; n < (width - 2) * (height - 2); n++)
+                if (count(n % (width - 2) + 1, n / (width - 2) + 1) == m && !grid[(n % (width - 2)) + 1 + (n / (width - 2) + 1)* width])
+                {
+                    uncover(n % (width - 2) + 2, n / (width - 2) + 2);
+                    return;
+                }
+    }
+
 };
 
 
@@ -133,6 +146,7 @@ void tui()
 {
     field a(10,10);
     a.fill(8);
+    a.fair_start();
     uint16_t x,y;
 
     do
@@ -150,7 +164,7 @@ void tui()
     a.render(std::cout);
 }
 
-void gui()
+void gui(uint16_t wcells = 15, uint16_t hcells = 15, uint16_t mines = 40)
 {
     SDL_Init(SDL_INIT_EVERYTHING);
     IMG_Init(IMG_INIT_PNG);
@@ -158,13 +172,16 @@ void gui()
     SDL_Renderer* ren;
     SDL_Texture* tex;
 
-    SDL_CreateWindowAndRenderer(800, 800, 0, &win, &ren);
+    SDL_CreateWindowAndRenderer(wcells * 32, hcells * 32 + 20, 0, &win, &ren);
+    SDL_SetWindowTitle(win, "MineSweep!");
     tex = IMG_LoadTexture(ren, "tiles.png");
     
     bool running = true;
+    int8_t playstate = 0; // -1 is loss, 0 is playing, 1 is win;
 
-    field a(10, 10);
-    a.fill(8);
+    field a(wcells, hcells);
+    a.fill(mines);
+    a.fair_start();
  
     while (running)
     {
@@ -179,7 +196,7 @@ void gui()
                     x = e.button.x;
                     y = e.button.y;
                     state = e.button.button;
-                    std::cout << "Click " << int(state) << " at " << x << ", " << y << "\n";
+                    // std::cout << "Click " << int(state) << " at " << x << ", " << y << "\n";
                     if (x < 0 || x > 32 * a.width || y < 20 || (y-20) > 32*a.height) continue;
 
                     x /= 32;
@@ -206,7 +223,7 @@ void gui()
             }
         }
 
-        SDL_SetRenderDrawColor(ren, 30, 30, 30, 255);
+        SDL_SetRenderDrawColor(ren, 50, 50, 50, 255);
         SDL_RenderClear(ren);
         
         SDL_Rect src = {0, 0, 16, 16};
@@ -253,7 +270,7 @@ void gui()
 
 int main()
 {
-    gui();
+    gui(10, 10, 40);
     return 0;
 }
 
