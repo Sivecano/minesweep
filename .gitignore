@@ -4,3 +4,4 @@ main
 cli
 server
 client
+server_headless
