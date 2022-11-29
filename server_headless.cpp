@@ -1,4 +1,5 @@
 #include "hfield.h"
+#include "field.h"
 #include <iostream>
 #include <cstdint>
 
@@ -24,6 +25,7 @@ int main()
     f.fair_start();
 
     bool running = true;
+    bool dead = false;
     int t0 = time(0);
 
     while(running)
@@ -34,6 +36,48 @@ int main()
             f.render(std::cout);
             t0 = time(0);
         }
+
+
+        running = false;
+        for (uint16_t n = 0; n < f.width*f.height; n++)
+        {
+            if (f.grid[n] && f.status[n] == 1)
+            {
+                dead = true;
+                break;
+            }
+            if (f.grid[n] && f.status[n] != -1)
+            {
+                running = true;
+                break;
+            }
+            if (!f.grid[n] && f.status[n] != 1)
+            {
+                running = true;
+                break;
+            }
+        }
+
     }
+
+    for (uint16_t n = 0; n < f.width * f.height; n++)
+    {
+        if (f.grid[n] && f.status[n] == -1) continue;
+
+        f.status[n] = 1;
+    }
+
+    f.render(std::cout);
+    
+    if (dead)
+        std::cout << "YOU LOST!" << std::endl;
+    else
+        std::cout << "YOU WIN!" << std::endl;
+
+    while (!f.sockets.empty())
+    {
+        f.sync();
+    }
+
 
 }
