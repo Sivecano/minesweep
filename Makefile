@@ -12,6 +12,8 @@ server: field.o gui.o hfield.o
 
 main: field.o gui.o
 
+server_headless: hfield.o field.o
+
 gui.o : gui.config.h
 
 #	g++ -o ms $< $(LDFLAGS) 

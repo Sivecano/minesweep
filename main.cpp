@@ -32,7 +32,7 @@ void tui()
 
 int main()
 {
-    gui(10, 10, 40);
+    gui(100, 100, 2300);
     return 0;
 }
 
