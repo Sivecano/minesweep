@@ -1,0 +1,6 @@
+.git
+*.o
+main
+cli
+server
+client
