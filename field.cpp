@@ -1,4 +1,6 @@
 #include "field.h"
+#include <cmath>
+#include <iomanip>
 
 field::field(uint16_t w, uint16_t h) : width(w), height(h)
 {
@@ -95,15 +97,29 @@ uint16_t field::fcount(uint16_t x, uint16_t y)
 // renders field to ostream;
 void field::render(std::ostream& out)
 {
-    out << "  ";
-    for (uint16_t n = 0; n < width; n++) out << " " << n;
-    out << "\n  ╔";
+    uint16_t tw = log10l(height) + 1;
+    uint16_t exp = 1;
+    for (uint16_t i = 1; i < tw; i++)
+        exp *= 10;
+    
+    for (; exp > 0; exp /= 10)
+    {
+        out << std::setw(tw + 1) << " ";
+        for (uint16_t n = 0; n < width; n++) 
+            if (n >= exp || (n == 0 && exp == 1))
+                out << " " << (n / exp) % 10;
+            else
+                out << "  ";
+        out << "\n";
+    }
+
+    out << std::setw(tw) << " " << " ╔";
     for (uint16_t n = 0; n < 2 * width - 1; n++) out << ((n % 2) ? "╤" : "═" );
     out << "╗\n";
     
     for (uint16_t y = 0; y < height; y++)
     {
-        out << y << " ║";
+        out << std::setw(tw) << y << " ║";
         for (uint16_t x = 0; x < width; x++)
         {
             switch(status[x + y * width])
@@ -128,13 +144,13 @@ void field::render(std::ostream& out)
         out << "║\n";
         if (y < height - 1)
         {
-            out << "  ╟";
+            out << std::setw(tw) << " " << " ╟";
             for (uint16_t n = 0; n < 2 * width - 1; n++) out << ((n % 2) ? "┼" : "─");
             out << "╢\n";
         }
     }
 
-    out << "  ╚";
+    out << std::setw(tw) << " " << " ╚";
     for (uint16_t n = 0; n < 2 * width - 1; n++) out << (n % 2 ? "╧" : "═");
     out << "╝" << std::endl;
 }
