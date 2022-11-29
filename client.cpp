@@ -4,7 +4,11 @@
 
 int main()
 {
-    rfield a("localhost");
+    std::string hostname;
+    std::cout << "give hostname: ";
+    std::cin >> hostname;
+
+    rfield a(hostname.c_str());
 
     gui(&a);
     return 0;
