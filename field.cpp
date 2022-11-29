@@ -130,10 +130,10 @@ void field::fill(uint16_t mines)
 void field::fair_start()
 {
     for (uint16_t m = 0; m < 9; m++)
-        for (uint16_t n = 0; n < (width - 2) * (height - 2); n++)
-            if (count(n % (width - 2) + 1, n / (width - 2) + 1) == m && !grid[(n % (width - 2)) + 1 + (n / (width - 2) + 1)* width])
+        for (uint16_t n = 0; n < (width) * (height); n++)
+            if (count(n % (width), n / (width)) == m && !grid[n])
             {
-                uncover(n % (width - 2) + 2, n / (width - 2) + 2);
+                guess(n % (width), n / (width));
                 return;
             }
 }

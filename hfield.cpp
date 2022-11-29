@@ -1,7 +1,8 @@
 #include "hfield.h"
 #include "port.h"
 #include "input.h"
-#include <SDL2/SDL_net.h>
+#include "SDL2/SDL_net.h"
+#include <queue>
 
 hfield::hfield(uint16_t w, uint16_t h) : field(w, h)
 {
@@ -37,6 +38,8 @@ hfield::~hfield()
 void hfield::sync()
 {
     TCPsocket youngling;
+    std::queue<size_t> to_delete;
+
     while ((youngling = SDLNet_TCP_Accept(server)))
     {
         IPaddress* name = SDLNet_TCP_GetPeerAddress(youngling);
@@ -68,20 +71,34 @@ void hfield::sync()
     }
 
     int out;
-    while(SDLNet_CheckSockets(set, 0) > 0)
+    while((out = SDLNet_CheckSockets(set, 0)) > 0)
     {
         input message;
+        size_t index = 0;
 
         for (TCPsocket sock : sockets)
         {
+            index++;
             if (!SDLNet_SocketReady(sock)) continue;
             
-            if (SDLNet_TCP_Recv(sock, &message, sizeof(message)) < sizeof(message))
+            uint8_t attempts = 0;
+
+            while (SDLNet_TCP_Recv(sock, &message, sizeof(message)) < sizeof(message) && attempts < 10)
             {
                 IPaddress* id = SDLNet_TCP_GetPeerAddress(sock);
                 std::cerr << "error recieving message from socket " << id->host << ":" << id->port << std::endl;
                 std::cerr << SDLNet_GetError() << std::endl;
-                continue;
+                attempts++;
+            }
+
+            if (attempts == 10)
+            {
+                IPaddress* id = SDLNet_TCP_GetPeerAddress(sock);
+                std::cerr << "couldn't accept message from " << id->host << ":" << id->port << std::endl;
+                std::cerr << "removing socket " << index - 1 << std::endl;
+               //TODO: remove socket 
+               to_delete.push(index - 1);
+               continue;
             }
 
             switch(message.mode)
@@ -115,7 +132,20 @@ void hfield::sync()
                     break;
             }
         }
+
+
+        while(!to_delete.empty())
+        {
+            index = to_delete.front();
+            std::cerr << "deleting: " << index << std::endl;
+            to_delete.pop();
+            SDLNet_TCP_DelSocket(set, sockets[index]);
+            SDLNet_TCP_Close(sockets[index]);
+            sockets.erase(sockets.begin() + index);
+        }
     }
+    
+
 
     if (out < 0)
     {
