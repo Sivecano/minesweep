@@ -14,7 +14,6 @@ void gui(uint16_t wcells, uint16_t hcells, uint16_t mines)
 {
     field a(wcells, hcells);
     a.fill(mines);
-    std::fill_n(a.status, wcells * hcells, 1);
     a.fair_start();
     gui(&a);
 }
