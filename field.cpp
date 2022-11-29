@@ -48,9 +48,10 @@ void field::flag(uint16_t x, uint16_t y)
     else if (status[n] == -1) status[n] = 0;
 }
 
+// this is local so no syncing
 void field::sync()
 {
-    std::cout << "this is a local object" << std::endl;
+    //std::cout << "this is a local object" << std::endl;
 }
 
 uint16_t field::count(uint16_t x, uint16_t y)

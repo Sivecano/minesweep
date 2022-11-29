@@ -7,7 +7,7 @@ rfield::rfield(const char* hostname) : field(0, 0)
 { 
     IPaddress server;
     
-    if (!SDLNet_ResolveHost(&server, hostname, PORT))
+    if (SDLNet_ResolveHost(&server, hostname, PORT) == -1)
     {
         std::cerr << "couldn't resolve host " << hostname << std::endl;
         return;

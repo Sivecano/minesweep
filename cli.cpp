@@ -3,11 +3,14 @@
 
 int main()
 {
-    uint16_t w = 10, h = 10, mines;
+    uint16_t w = 10, h = 10, mines = 8;
+    std::cout << "width, height : ";
     std::cin >> w;
     std::cin >> h;
+    std::cout << "mines: ";
+    std::cin >> mines;
     field a(w, h);
-    a.fill(8);
+    a.fill(mines);
     a.fair_start();
     uint16_t x,y;
 
