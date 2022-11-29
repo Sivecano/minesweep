@@ -14,6 +14,7 @@ void gui(uint16_t wcells, uint16_t hcells, uint16_t mines)
 {
     field a(wcells, hcells);
     a.fill(mines);
+    std::fill_n(a.status, wcells * hcells, 1);
     a.fair_start();
     gui(&a);
 }
@@ -99,7 +100,7 @@ void gui(field* game)
                     if (game->grid[n])
                         src.y = 2 * swidth ;
                     else 
-                        src.y = (4 * swidth + swidth* game->count(n % game->width, n / game->width)) ;
+                        src.y = (3 * swidth + swidth* game->count(n % game->width, n / game->width)) ;
             }
 
             SDL_RenderCopy(ren, tex, &src, &dst);
