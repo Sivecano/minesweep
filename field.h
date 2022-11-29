@@ -19,5 +19,6 @@ struct field
     void fill(uint16_t mines);
     void fair_start();
     uint16_t count(uint16_t x, uint16_t y);
+    uint16_t fcount(uint16_t x, uint16_t y);
 
 };

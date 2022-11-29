@@ -34,6 +34,21 @@ void field::uncover(uint16_t x, uint16_t y)
 bool field::guess(uint16_t x, uint16_t y)
 {
     if (x >= width || y >= height) return false;
+    
+    // chording
+    if (status[x + width * y] == 1 && count(x, y) == fcount(x,y))
+    {
+        bool out = false;
+
+        for (uint16_t dx = x - (x > 0); dx <= x + (x < width - 1); dx++)
+            for (uint16_t dy = y - (y > 0); dy <= y + (y < height - 1); dy++)
+            {
+                out = out || grid[dx + dy * width];
+                uncover(dx + 1, dy + 1);
+            }
+
+        return out;
+    }
 
     uncover(x + 1, y + 1);
 
@@ -57,20 +72,22 @@ void field::sync()
 uint16_t field::count(uint16_t x, uint16_t y)
 {
     uint16_t out = 0;
-    uint16_t sx = x, ex = x, sy = y, ey = y;
-    if (x > 0)
-        sx--;
-    if (x < width - 1)
-        ex++;
-    if (y > 0)
-        sy--;
-    if (y < height - 1)
-        ey++;
-
     
-    for (uint16_t dx = sx; dx <= ex; dx++)
-        for (uint16_t dy = sy; dy <= ey; dy++)
+    for (uint16_t dx = x - (x > 0); dx <= x + (x < width - 1); dx++)
+        for (uint16_t dy = y - (y > 0); dy <= y + (y < height - 1); dy++)
             if (grid[dx + width * dy]) out++;
+
+    return out;
+}
+
+
+uint16_t field::fcount(uint16_t x, uint16_t y)
+{
+    uint16_t out = 0;
+    
+    for (uint16_t dx = x - (x > 0); dx <= x + (x < width - 1); dx++)
+        for (uint16_t dy = y - (y > 0); dy <= y + (y < height - 1); dy++)
+            if (status[dx + width * dy] == -1) out++;
 
     return out;
 }
