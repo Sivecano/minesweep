@@ -4,8 +4,8 @@
 int main()
 {
 
-    hfield a(120, 65);
-    a.fill(500);
+    hfield a(15, 15);
+    a.fill(60);
     a.fair_start();
 
     gui(&a);
