@@ -1,5 +1,7 @@
 .git
 *.o
+*.wo
+win/*
 main
 cli
 server
