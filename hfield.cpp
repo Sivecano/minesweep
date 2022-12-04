@@ -1,7 +1,6 @@
 #include "hfield.h"
 #include "port.h"
 #include "input.h"
-#include "SDL2/SDL_net.h"
 #include <queue>
 
 hfield::hfield(uint16_t w, uint16_t h) : field(w, h)

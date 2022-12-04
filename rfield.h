@@ -1,5 +1,6 @@
 #pragma once
 #include "field.h"
+#define WITHOUT_SDL
 #include "SDL2/SDL_net.h"
 // remote minesweeper field connected to over TCP:
 struct rfield : field

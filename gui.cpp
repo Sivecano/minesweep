@@ -1,10 +1,5 @@
-#include "field.h"
-#include "SDL2/SDL.h"
-#include "SDL2/SDL_image.h"
 #include "gui.h"
 #include "gui.config.h"
-#include <SDL2/SDL_filesystem.h>
-#include <SDL2/SDL_stdinc.h>
 
 #ifndef SCALE
 #define SCALE 2
