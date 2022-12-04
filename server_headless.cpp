@@ -3,7 +3,7 @@
 #include <iostream>
 #include <cstdint>
 
-int main()
+int main(int argc, char** argv)
 {
     uint16_t w,h,m;
     std::cout << "width, height, mines: ";
@@ -79,5 +79,5 @@ int main()
         f.sync();
     }
 
-
+    return 0;
 }

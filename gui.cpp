@@ -3,6 +3,8 @@
 #include "SDL2/SDL_image.h"
 #include "gui.h"
 #include "gui.config.h"
+#include <SDL2/SDL_filesystem.h>
+#include <SDL2/SDL_stdinc.h>
 
 #ifndef SCALE
 #define SCALE 2
@@ -28,7 +30,13 @@ void gui(field* game)
 
     SDL_CreateWindowAndRenderer(game->width * SCALE * swidth , (game->height * SCALE * swidth  + SCALE * 10) , 0, &win, &ren);
     SDL_SetWindowTitle(win, "MineSweep!");
-    tex = IMG_LoadTexture(ren, "tiles.png");
+
+    char* cpath = SDL_GetBasePath();
+    std::string path = cpath;
+
+    SDL_free(cpath);
+
+    tex = IMG_LoadTexture(ren, (path + "tiles.bmp").c_str());
     
     bool running = true;
     int8_t playstate = 0; // -1 is loss, 0 is playing, 1 is win;
@@ -72,6 +80,14 @@ void gui(field* game)
         }
         
         game->sync();
+
+        if (!tex)
+        {
+            SDL_SetRenderDrawColor(ren, 255, 0, 0, 255);
+            SDL_RenderClear(ren);
+            SDL_RenderPresent(ren);
+            continue;
+        }
 
         SDL_SetRenderDrawColor(ren, 50, 50, 50, 255);
         SDL_RenderClear(ren);

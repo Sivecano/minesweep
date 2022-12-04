@@ -1,7 +1,7 @@
 #include "gui.h"
 #include "hfield.h"
 
-int main()
+int main(int argc, char* argv[])
 {
 
     hfield a(15, 15);

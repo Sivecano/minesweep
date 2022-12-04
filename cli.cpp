@@ -1,7 +1,7 @@
 #include "field.h"
 #include <iostream>
 
-int main()
+int main(int argc, char** argv)
 {
     uint16_t w = 10, h = 10, mines = 8;
     std::cout << "width, height : ";

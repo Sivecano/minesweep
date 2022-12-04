@@ -6,6 +6,7 @@
 
 hfield::hfield(uint16_t w, uint16_t h) : field(w, h)
 {
+    SDLNet_Init();
     IPaddress ip;
 
     if (SDLNet_ResolveHost(&ip, NULL, PORT) < 0)
@@ -33,6 +34,7 @@ hfield::~hfield()
         SDLNet_TCP_Close(sock);
 
     SDLNet_TCP_Close(server);
+    SDLNet_Init();
 }
 
 void hfield::sync()

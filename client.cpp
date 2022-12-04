@@ -2,7 +2,7 @@
 #include "rfield.h"
 #include "field.h"
 
-int main()
+int main(int argc, char* argv[])
 {
     std::string hostname;
     std::cout << "give hostname: ";

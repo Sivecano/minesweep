@@ -6,7 +6,6 @@
 #include "SDL2/SDL_image.h"
 #include "gui.h"
 
-
 void tui()
 {
     field a(10,10);
@@ -30,9 +29,9 @@ void tui()
 }
 
 
-int main()
+int main(int argc, char* argv[])
 {
-    gui(100, 100, 2300);
+    gui(10, 10, 20);
     return 0;
 }
 
