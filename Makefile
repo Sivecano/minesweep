@@ -25,10 +25,17 @@ WINLDLIBS := -lmingw32 -lSDL2main -lSDL2 -lSDL2_image.dll -lSDL2_net.dll -static
 %.wo : %.cpp
 	$(WINCC) -c $(WINCXXFLAGS) $^ -o $@ $(WINLDLIBS) 
 
-%.exe :  %.wo
+%.exe :  %.wo 
 	$(WINCC) $(WINCXXFLAGS) $^ -o win/$@ $(WINLDLIBS)
 
-win : cli.exe client.exe server.exe main.exe server_headless.exe
+win :
+	mkdir win
+	cp /usr/x86_64-w64-mingw32/bin/SDL2.dll win 
+	cp /usr/x86_64-w64-mingw32/bin/SDL2_image.dll win 
+	cp /usr/x86_64-w64-mingw32/bin/SDL2_net.dll win 
+	cp /usr/x86_64-w64-mingw32/bin/libpwin/usr/x86_64-w64-mingw32/bin/libwinpthread-1.dll win 
+
+winall : win cli.exe client.exe server.exe main.exe server_headless.exe
 
 client.exe : field.wo rfield.wo gui.wo
 
