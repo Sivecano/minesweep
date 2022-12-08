@@ -1,11 +1,40 @@
+#include <SDL2/SDL_events.h>
+#define SDL_HINT_IME_SHOW_UI  1
 #include "gui.h"
 #include "gui.config.h"
+#include "SDL2/SDL_ttf.h"
+#include <SDL2/SDL_keyboard.h>
+#include <SDL2/SDL_rect.h>
 
 #ifndef SCALE
 #define SCALE 2
 #endif
 
 const uint16_t swidth = 16;
+
+
+
+void init()
+{
+    SDL_Init(SDL_INIT_EVERYTHING);
+    IMG_Init(IMG_INIT_PNG);
+}
+
+void deinit()
+{
+    IMG_Quit();
+    SDL_Quit();
+}
+
+std::string textinput(std::string prompt)
+{
+    SDL_Window* win;
+    SDL_Renderer* ren;
+
+    SDL_CreateWindowAndRenderer(20, 20, 0, &win, &ren);
+
+    return "";
+}
 
 void gui(uint16_t wcells, uint16_t hcells, uint16_t mines)
 {
@@ -17,12 +46,11 @@ void gui(uint16_t wcells, uint16_t hcells, uint16_t mines)
 
 void gui(field* game)
 {
-    SDL_Init(SDL_INIT_EVERYTHING);
-    IMG_Init(IMG_INIT_PNG);
     SDL_Window* win;
     SDL_Renderer* ren;
     SDL_Texture* tex;
 
+        
     SDL_CreateWindowAndRenderer(game->width * SCALE * swidth , (game->height * SCALE * swidth  + SCALE * 10) , 0, &win, &ren);
     SDL_SetWindowTitle(win, "MineSweep!");
 
@@ -32,10 +60,9 @@ void gui(field* game)
     SDL_free(cpath);
 
     tex = IMG_LoadTexture(ren, (path + "tiles.bmp").c_str());
-    
     bool running = true;
     int8_t playstate = 0; // -1 is loss, 0 is playing, 1 is win;
-
+    
     while (running)
     {
         SDL_Event e;
@@ -118,14 +145,10 @@ void gui(field* game)
             dst.x += SCALE * swidth ;
         }
 
-
-
-
         SDL_RenderPresent(ren);
     }
 
-
     SDL_DestroyTexture(tex);
-    SDL_Quit();
-
+    SDL_DestroyRenderer(ren);
+    SDL_DestroyWindow(win);
 }
