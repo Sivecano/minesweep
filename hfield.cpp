@@ -97,7 +97,6 @@ void hfield::sync()
                 IPaddress* id = SDLNet_TCP_GetPeerAddress(sock);
                 std::cerr << "couldn't accept message from " << id->host << ":" << id->port << std::endl;
                 std::cerr << "removing socket " << index - 1 << std::endl;
-               //TODO: remove socket 
                to_delete.push(index - 1);
                continue;
             }
