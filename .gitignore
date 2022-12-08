@@ -3,6 +3,7 @@
 *.wo
 win/*
 *.iso
+*.zip
 main
 cli
 server
